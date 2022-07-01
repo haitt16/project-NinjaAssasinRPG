@@ -33,13 +33,13 @@ git commit -m "commit code"
 git push
 ```
 
-Lưu ý sau khi `push`, git yêu cầu nhập tên đăng nhập và mật khẩu. Nhập tên đăng nhập là tên git của mình. Mật khẩu sẽ **không** phải mật khẩu git ở code của mọi người, mà nó là personal token. Lấy personal token bằng cách [này](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+Lưu ý sau khi `push`, git yêu cầu nhập tên đăng nhập và mật khẩu. Nhập tên đăng nhập là tên git của mình, `Enter`. Mật khẩu sẽ **không** phải mật khẩu git ở code của mọi người, mà nó là personal token. Lấy personal token bằng cách [này](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 personal token của các bạn có dạng này:
 ```
 ghp_DlI8Uhj6bTMoOBYGKkyFP5g86Q8eIp4eUolX
 ```
 
-hãy paste personal token của bạn vào command prompt, (chỗ nó yêu cầu nhập). 
+hãy paste personal token của bạn vào command prompt (chỗ nó yêu cầu nhập) và bấm `Enter`. 
 Push đã hoàn thành.
 
 Cảm ơn bạn vì đã đọc guide, giúp việc quản lý code và ghép code thành một project hoàn chỉnh dễ hơn!
