@@ -16,13 +16,13 @@ Hướng dẫn và giảng dạy bởi TS. Trịnh Thành Trung.
 Mỗi người có một `branch` riêng ứng với tên từng người. Trước khi đẩy code lên, hãy mở command prompt để `clone` repo này về:
 
 ```
-git clone -b <tên_bạn> https://github.com/michaeltiat/project-PokemonRPG.git C:\Documents
+git clone -b <tên_bạn> https://github.com/michaeltiat/project-PokemonRPG.git C:\project-PokemonRPG\
 ```
 
 Sau đó, mọi người `copy` code của mình vào folder đã `clone` về, sau đó `cd` vào folder vừa `clone` :
 
 ```
-cd C:\Documents\project-PokemonRPG 
+cd C:\project-PokemonRPG\ 
 ```
 
 Tiếp theo, `add` , `commit` và `push` :
