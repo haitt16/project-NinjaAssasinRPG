@@ -8,11 +8,12 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import Object.OBJ_Fireball;
 import main.GamePanel;
 import main.KeyHandler;
 
 public class Player extends Entity{//Người chơi kế thừa nhân vật
-    
+    GamePanel gp;
     KeyHandler keyH;
     public int hasKey = 0;
     public int countChest = 0;
@@ -52,8 +53,9 @@ public class Player extends Entity{//Người chơi kế thừa nhân vật
         
         maxLife = 6;
         life = maxLife;
+        
+        projectile=new OBJ_Fireball(gp);
     }
-
     public void getPlayerImage(){
         try {
             up1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_up_1.png"));
@@ -140,16 +142,25 @@ public class Player extends Entity{//Người chơi kế thừa nhân vật
             	}
             		spriteCounter = 0;
             }
+            
+    	if (gp.keyH.shotKeyPressed == true && projectile.alive==false) {
+    		projectile.set(x,y,direction,true,this);
+    	//ADD TO THE LIST
+    		gp.projectileList.add(projectile);
+ 
     	}
+    	}
+    	
         if(invincible == true) {
             invincibleCounter++;
-            if(invincibleCounter > 60) {
+            if (invincibleCounter > 60) {
                 invincible = false;
                 invincibleCounter = 0;
             }
         }
+    }        
         
-    }
+    
     public void attacking(){
         spriteCounter++;
 

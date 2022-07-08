@@ -1,9 +1,11 @@
+
 package main;
 
 import java.awt.Color;//màu
 import java.awt.Dimension;//kích thước
 import java.awt.Graphics;//Đồ hoạ
 import java.awt.Graphics2D;//Đồ hoạ 2D
+import java.util.ArrayList;
 
 import javax.swing.JPanel;//Tổ chức các component
 
@@ -28,8 +30,9 @@ public class GamePanel extends JPanel implements Runnable{//Runable thực thi m
     int FPS = 60;
 
     TileManager tileM = new TileManager(this);
-    KeyHandler keyH = new KeyHandler();
+    public KeyHandler keyH = new KeyHandler();
     Thread gameThread;
+    
     public CollisionChecker cChecker = new CollisionChecker(this);
     public Player player = new Player(this, keyH);
     public SuperObject obj[] = new SuperObject[11];
@@ -40,7 +43,7 @@ public class GamePanel extends JPanel implements Runnable{//Runable thực thi m
     //Entity array
     public Entity monster[] = new Entity[20];
     public Entity npc[] = new Entity[10];
-
+    public ArrayList<Entity> projectileList=new ArrayList<>();
     //Game State
     public int gameState;
     public final int playState = 1;
@@ -112,6 +115,16 @@ public class GamePanel extends JPanel implements Runnable{//Runable thực thi m
                 }
             }
         }
+        for(int i = 0; i< projectileList.size(); i++) {
+            if(projectileList.get(i) != null) {
+                if (projectileList.get(i).alive ==true){
+                    projectileList.get(i).update();
+                }
+                if (projectileList.get(i).alive ==false){
+                	projectileList.remove(i);
+                }
+            }
+        }
     }
     public void paintComponent(Graphics g){
         super.paintComponent(g);
@@ -136,7 +149,12 @@ public class GamePanel extends JPanel implements Runnable{//Runable thực thi m
                 monster[i].draw(g2);
             }
         }
-        
+        //Projectile
+        for (int i=0; i< projectileList.size(); i++) {
+            if (projectileList.get(i)!=null) {
+            	projectileList.get(i).draw(g2);
+            }
+        }
         player.draw(g2);
         ui.draw(g2);
         //ui.drawPlayerLife();
