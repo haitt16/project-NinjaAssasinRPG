@@ -13,7 +13,7 @@ import main.GamePanel;
 import main.KeyHandler;
 
 public class Player extends Entity{//Người chơi kế thừa nhân vật
-    GamePanel gp;
+  
     KeyHandler keyH;
     public int hasKey = 0;
     public int countChest = 0;
