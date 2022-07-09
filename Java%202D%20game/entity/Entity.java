@@ -34,6 +34,8 @@ public class Entity {
     public int actionLockCounter = 0;
     public boolean invincible = false;
     public int invincibleCounter = 0;
+    public int shotAvailableCounter=0;//So lan ban ra (tranh BUG ban ra 2 phat dan neu quai chua chet)
+    
     public int type; // 0= player, 1 = npc, 2 = monster
     int dyingCounter =0;
     int hpBarCounter =0;
@@ -52,7 +54,13 @@ public class Entity {
     public Entity(GamePanel gp) {
         this.gp = gp;
     }
-
+    
+    public void damagePlayer(int attack) {
+    	if (gp.player.invincible==false) {
+    		gp.player.life -= attack;
+    		gp.player.invincible=true;
+    	}
+    }
     public void draw(Graphics2D g2) {
         BufferedImage image = null;
         switch (direction) {

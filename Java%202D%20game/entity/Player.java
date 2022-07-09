@@ -143,12 +143,13 @@ public class Player extends Entity{//Người chơi kế thừa nhân vật
             		spriteCounter = 0;
             }
             
-    	if (gp.keyH.shotKeyPressed == true && projectile.alive==false) {
+    	if (gp.keyH.shotKeyPressed == true && projectile.alive==false && shotAvailableCounter ==30) {
     		projectile.set(x,y,direction,true,this);
     	//ADD TO THE LIST
     		gp.projectileList.add(projectile);
- 
+    		shotAvailableCounter=0;		
     	}
+    	
     	}
     	
         if(invincible == true) {
@@ -157,6 +158,9 @@ public class Player extends Entity{//Người chơi kế thừa nhân vật
                 invincible = false;
                 invincibleCounter = 0;
             }
+        }
+        if (shotAvailableCounter < 30) {
+        	shotAvailableCounter++;
         }
     }        
         
@@ -188,7 +192,7 @@ public class Player extends Entity{//Người chơi kế thừa nhân vật
             solidArea.height = attackArea.height;
             //Check monter collision with update worldX, worldY and solidArea
             int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
-            damageMonter(monsterIndex);
+            damageMonster(monsterIndex, attack);
 
             //after checking collision, restore the original data
             x = currentWorldX;
@@ -254,18 +258,18 @@ public class Player extends Entity{//Người chơi kế thừa nhân vật
             System.out.println("hitting monster");
             gp.ui.showMessage("Ouchhhh");
             if(invincible == false) {
-                life -= 1;
+                life -= attack;
                 invincible = true;
             }
 
         }
     }
-    public void damageMonter(int i){
+    public void damageMonster(int i, int attack){
         if(i!=999){
             
             if (gp.monster[i].invincible == false ){
 
-                gp.monster[i].life -=1;
+                gp.monster[i].life -=attack;
                 gp.monster[i].invincible =true;
                 gp.monster[i].damageReaction();
                 if(gp.monster[i].life <= 0){

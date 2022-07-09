@@ -16,6 +16,20 @@ public class Projectile extends Entity {
 		 this.life=this.maxLife;
 	}
 	public void update() {
+		if (user==gp.player) {
+			int monsterIndex=gp.cChecker.checkEntity(this, gp.monster);
+			if (monsterIndex !=999) {
+				gp.player.damageMonster(monsterIndex, attack);
+				alive=false;
+			}
+		}
+		else if (user !=gp.player){
+			 boolean contactPlayer=gp.cChecker.checkPlayer(this);
+			 if (gp.player.invincible==false && contactPlayer==true) {
+				 damagePlayer(attack);
+				 alive=false;
+			 }
+		}
 		switch(direction) {
 		case "up": y-=speed;break;
 		case "down": y+=speed;break;
