@@ -94,15 +94,15 @@ public class EventHandler {
 		}
 	}*/
 	
-	public void teleport() {//Dịch chuyển, phát triển lên có thể thành chuyển map
+	public void teleport() {// Dịch chuyển, phát triển lên có thể thành chuyển map
 		if (gp.player.countChest == 3) {
 			gp.ui.showMessage("You Win");
-			gp.player.x -= 7 * gp.tileSize;
-			gp.player.y -= 9 * gp.tileSize;
-		}
-		else {
+			gp.gameState = "finish";
+			gp.player.x = 1 * gp.tileSize;
+			gp.player.y = 1 * gp.tileSize;
+		} else {
 			gp.ui.showMessage("You don't have enough Chest!");
-			gp.player.y -=  gp.tileSize;
+			gp.player.y -= gp.tileSize;
 		}
 	}
 }

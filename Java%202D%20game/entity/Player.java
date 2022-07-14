@@ -8,11 +8,12 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import Object.OBJ_Fireball;
 import main.GamePanel;
 import main.KeyHandler;
 
 public class Player extends Entity{//Người chơi kế thừa nhân vật
-    
+  
     KeyHandler keyH;
     public int hasKey = 0;
     public int countChest = 0;
@@ -36,9 +37,13 @@ public class Player extends Entity{//Người chơi kế thừa nhân vật
         solidAreaDefaultY = solidArea.y;
         solidArea.width = 32;
         solidArea.height = 32;
+
+        attackArea.width = 36;
+        attackArea.height = 36;
         
         setDefaultValues();
         getPlayerImage();
+        getPlayerAttackImage();
     }
     public void setDefaultValues() {
         x = 80;
@@ -48,6 +53,19 @@ public class Player extends Entity{//Người chơi kế thừa nhân vật
         
         maxLife = 6;
         life = maxLife;
+        
+        projectile=new OBJ_Fireball(gp);
+    }
+    public void setDefaultPosition() {
+        x = 80;
+        y = 80;
+        direction = "down";
+    }
+    public void restoreLifeAndMan() {
+        life = maxLife;
+        invincible = false;
+        hasKey = 0;
+        countChest = 0;
     }
 
     public void getPlayerImage(){
@@ -60,13 +78,29 @@ public class Player extends Entity{//Người chơi kế thừa nhân vật
             left2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_left_2.png"));
             right1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_right_1.png"));
             right2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_right_2.png"));
-
-        } catch (IOException e) {
+            } catch (IOException e) {
             e.printStackTrace();
         }
     }
+    public void getPlayerAttackImage(){
+        try {
+            attackUp1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_attack_up_1.png"));
+            attackUp2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_attack_up_2.png"));
+            attackDown1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_attack_down_1.png"));
+            attackDown2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_attack_down_2.png"));
+            attackLeft1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_attack_left_1.png"));
+            attackLeft2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_attack_left_2.png"));
+            attackRight1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_attack_right_1.png"));
+            attackRight2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_attack_right_2.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }    
     public void update() {
-    	if (keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true) {
+        if (attacking == true){
+            attacking();
+        }
+    	else if (keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true) {
     		if (keyH.upPressed == true){
                 direction = "up";
                 //y -= speed;
@@ -99,7 +133,7 @@ public class Player extends Entity{//Người chơi kế thừa nhân vật
     		gp.eHandler.checkEvent();
     		
     		// If Collision is false then player can move
-    		if(collisionOn == false) {
+    		if(collisionOn == false && keyH.enterPressed == false) {
     			switch(direction) {
     			case "up": y-=speed; break;
     			case "down": y+=speed; break;
@@ -108,6 +142,8 @@ public class Player extends Entity{//Người chơi kế thừa nhân vật
     			}
     		}
     		
+            keyH.enterPressed =false;
+
             spriteCounter ++;
             if (spriteCounter > 12) {
             	if (spriteNum == 1) {
@@ -118,17 +154,73 @@ public class Player extends Entity{//Người chơi kế thừa nhân vật
             	}
             		spriteCounter = 0;
             }
+            if (life < 0) {
+                gp.gameState = "die";
+            }
+    	if (gp.keyH.shotKeyPressed == true && projectile.alive==false && shotAvailableCounter ==30) {
+    		projectile.set(x,y,direction,true,this);
+    	//ADD TO THE LIST
+    		gp.projectileList.add(projectile);
+    		shotAvailableCounter=0;		
     	}
+    	
+    	}
+    	
         if(invincible == true) {
             invincibleCounter++;
-            if(invincibleCounter > 60) {
+            if (invincibleCounter > 60) {
                 invincible = false;
                 invincibleCounter = 0;
             }
         }
+        if (shotAvailableCounter < 30) {
+        	shotAvailableCounter++;
+        }
+    }        
         
-    }
     
+    public void attacking(){
+        spriteCounter++;
+
+        if (spriteCounter<=5){
+            spriteNum=1;
+        }
+        if (spriteCounter >5 && spriteCounter <=25){
+            spriteNum =2;
+            
+            //Save the current worldX, worldY, solidArea
+            int currentWorldX = x;
+            int currentWorldY = y;
+            int solidAreaWidth = solidArea.width;
+            int solidAreaHeight = solidArea.height;
+
+            //Adjust player's worldX/Y for the attackArea
+            switch(direction){
+                case "up": y -= attackArea.height;break;
+                case "down": y +=attackArea.height;break;
+                case "left": x -= attackArea.width;break;
+                case "right": x +=attackArea.width;break;
+            }
+            //attackArea become solidArea
+            solidArea.width = attackArea.width;
+            solidArea.height = attackArea.height;
+            //Check monter collision with update worldX, worldY and solidArea
+            int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
+            damageMonster(monsterIndex, attack);
+
+            //after checking collision, restore the original data
+            x = currentWorldX;
+            y = currentWorldY;
+            solidArea.width = solidAreaWidth;
+            solidArea.height = solidAreaHeight;
+
+        }
+        if (spriteCounter>25){
+            spriteNum = 1;
+            spriteCounter = 0;
+            attacking = false;
+        }
+    }
     public void pickUpObject(int i) {
     	if (i != 999) {
     		String objectName = gp.obj[i].name;
@@ -164,23 +256,43 @@ public class Player extends Entity{//Người chơi kế thừa nhân vật
     	}
     }
     public void interactNPC(int i) {
-        if(i != 999) {
-            System.out.println("hitting npc");
-            gp.ui.showMessage("Pick up the key to open the door");
+        if (keyH.enterPressed == true ){
+            if(i != 999) {
+                    System.out.println("hitting npc");
+                    gp.ui.showMessage("Pick up the key to open the door"); 
+                }
+            else {
+                attacking = true ;
+            }
         }
+        
     }
     public void contactMonster(int i) {
         if(i != 999) {
             System.out.println("hitting monster");
             gp.ui.showMessage("Ouchhhh");
             if(invincible == false) {
-                life -= 1;
+                life -= attack;
                 invincible = true;
             }
 
         }
     }
-    
+    public void damageMonster(int i, int attack){
+        if(i!=999){
+            
+            if (gp.monster[i].invincible == false ){
+
+                gp.monster[i].life -=attack;
+                gp.monster[i].invincible =true;
+                gp.monster[i].damageReaction();
+                if(gp.monster[i].life <= 0){
+                    gp.monster[i].dying = true;
+                }
+            }
+        }
+    }
+
     public void draw(Graphics2D g2) {
         //g2.setColor(Color.white);
         //g2.fillRect(x, y, gp.tileSize, gp.tileSize);
@@ -188,35 +300,43 @@ public class Player extends Entity{//Người chơi kế thừa nhân vật
         BufferedImage image = null;
         switch (direction) {
             case "up":
-            	if (spriteNum == 1) {
-            		image = up1;
-            	}
-                if (spriteNum == 2) {
-                	image = up2;
+                if (attacking == false){
+                    if (spriteNum == 1) {image = up1;}
+                    if (spriteNum == 2) {image = up2;}
+                }
+                if (attacking == true){
+            	    if (spriteNum == 1) {image = attackUp1;}
+                    if (spriteNum == 2) {image = attackUp2;}
                 }
                 break;
             case "down":
-            	if (spriteNum == 1) {
-            		image = down1;
-            	}
-                if (spriteNum == 2) {
-                	image = down2;
+                if (attacking == false){
+                    if (spriteNum == 1) {image = down1;}
+                    if (spriteNum == 2) {image = down2;}
+                }
+                if (attacking == true){
+            	    if (spriteNum == 1) {image = attackDown1;}
+                    if (spriteNum == 2) {image = attackDown2;}
                 }
                 break;
             case "left":
-            	if (spriteNum == 1) {
-            		image = left1;
-            	}
-                if (spriteNum == 2) {
-                	image = left2;
+                if (attacking == false){
+                    if (spriteNum == 1) {image = left1;}
+                    if (spriteNum == 2) {image = left2;}
+                }
+                if (attacking == true){
+                    if (spriteNum == 1) {image = attackLeft1;}
+                    if (spriteNum == 2) {image = attackLeft2;}
                 }
                 break;
             case "right":
-            	if (spriteNum == 1) {
-            		image = right1;
-            	}
-                if (spriteNum == 2) {
-                	image = right2;
+                if (attacking == false){
+                    if (spriteNum == 1) {image = right1;}
+                    if (spriteNum == 2) {image = right2;}
+                }
+                if (attacking == true){
+                    if (spriteNum == 1) {image = attackRight1;}
+                    if (spriteNum == 2) {image = attackRight2;}
                 }
                 break;
         }

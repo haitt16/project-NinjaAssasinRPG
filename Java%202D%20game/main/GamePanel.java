@@ -1,9 +1,11 @@
+
 package main;
 
 import java.awt.Color;//màu
 import java.awt.Dimension;//kích thước
 import java.awt.Graphics;//Đồ hoạ
 import java.awt.Graphics2D;//Đồ hoạ 2D
+import java.util.ArrayList;
 
 import javax.swing.JPanel;//Tổ chức các component
 
@@ -28,8 +30,9 @@ public class GamePanel extends JPanel implements Runnable{//Runable thực thi m
     int FPS = 60;
 
     TileManager tileM = new TileManager(this);
-    KeyHandler keyH = new KeyHandler();
+    public KeyHandler keyH = new KeyHandler();
     Thread gameThread;
+    
     public CollisionChecker cChecker = new CollisionChecker(this);
     public Player player = new Player(this, keyH);
     public SuperObject obj[] = new SuperObject[11];
@@ -40,9 +43,10 @@ public class GamePanel extends JPanel implements Runnable{//Runable thực thi m
     //Entity array
     public Entity monster[] = new Entity[20];
     public Entity npc[] = new Entity[10];
-
+    public ArrayList<Entity> projectileList=new ArrayList<>();
+    public ArrayList<Entity> particleList=new ArrayList<>();
     //Game State
-    public int gameState;
+    public String gameState="play";
     public final int playState = 1;
     public final int pauseState = 2;
     
@@ -104,37 +108,81 @@ public class GamePanel extends JPanel implements Runnable{//Runable thực thi m
         }
         for(int i = 0; i< monster.length; i++) {
             if(monster[i] != null) {
-                monster[i].update();
+                if (monster[i].alive ==true && monster[i].dying == false){
+                    monster[i].update();
+                }
+                if (monster[i].alive ==false){
+                    monster[i]= null;
+                }
+            }
+        }
+        for(int i = 0; i< projectileList.size(); i++) {
+            if(projectileList.get(i) != null) {
+                if (projectileList.get(i).alive ==true){
+                    projectileList.get(i).update();
+                }
+                if (projectileList.get(i).alive ==false){
+                	projectileList.remove(i);
+                }
             }
         }
     }
-    public void paintComponent(Graphics g){
+    public void retry() {
+        player.setDefaultPosition();
+        player.restoreLifeAndMan();
+        aSetter.setNPC();
+        aSetter.setMonster();
+        gameState = "play";
+    }
+
+    public void restart() {
+        player.setDefaultValues();
+        player.setDefaultPosition();
+        player.restoreLifeAndMan();
+        aSetter.setObject();
+        aSetter.setNPC();
+        aSetter.setMonster();
+        gameState = "play";
+        this.ui.messageOn = false;
+
+    }
+
+    public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Graphics2D g2 =(Graphics2D)g;
-        
-        tileM.draw(g2);
-        
-        for (int i=0; i<obj.length; i++) {
-        	if (obj[i] != null) {
-        		obj[i].draw(g2, this);
-        	}
-        }
-        //NPC 
-        for (int i=0; i<npc.length; i++) {
-            if (npc[i] != null) {
-                npc[i].draw(g2);
+        Graphics2D g2 = (Graphics2D) g;
+
+        // TILE SCREEN
+        if (gameState == "play") {
+            // TILE
+            tileM.draw(g2);
+
+            for (int i = 0; i < obj.length; i++) {
+                if (obj[i] != null) {
+                    obj[i].draw(g2, this);
+                }
             }
-        }
-        //Monster
-        for (int i=0; i< monster.length; i++) {
-            if (monster[i] != null) {
-                monster[i].draw(g2);
+            // NPC
+            for (int i = 0; i < npc.length; i++) {
+                if (npc[i] != null) {
+                    npc[i].draw(g2);
+                }
             }
+            // Monster
+            for (int i = 0; i < monster.length; i++) {
+                if (monster[i] != null) {
+                    monster[i].draw(g2);
+                }
+            }
+
+            player.draw(g2);
+            ui.draw(g2);
+        } else {
+            ui.draw(g2);
+
         }
-        
-        player.draw(g2);
-        ui.draw(g2);
-        //ui.drawPlayerLife();
+
+        // ui.drawPlayerLife();
         g2.dispose();
     }
 }
+
