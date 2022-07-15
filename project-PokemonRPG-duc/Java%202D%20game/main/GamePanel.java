@@ -173,7 +173,12 @@ public class GamePanel extends JPanel implements Runnable{//Runable thực thi m
                     monster[i].draw(g2);
                 }
             }
-
+            //Projectile
+            for (int i=0; i< projectileList.size(); i++) {
+                if (projectileList.get(i)!=null) {
+            	    projectileList.get(i).draw(g2);
+                }
+            }
             player.draw(g2);
             ui.draw(g2);
         } else {
