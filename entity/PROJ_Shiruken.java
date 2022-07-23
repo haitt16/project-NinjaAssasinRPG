@@ -14,6 +14,10 @@ public class PROJ_Shiruken extends Projectile {
 	public PROJ_Shiruken(EntityGraphic entityGraphic) {
 		super(entityGraphic);
 		name = "Shiruken";
+		solidArea.x = 20;
+		solidArea.y = 20;
+		solidArea.width = 8;
+		solidArea.height = 8;
 		speed = 5;
 		maxLife = 80;
 		life = maxLife;

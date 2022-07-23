@@ -15,7 +15,7 @@ public class MON_Tanuki extends Entity {
         type = 2;
         direction = "right";
         speed = 1;
-        maxLife = 4;
+        maxLife = 2;
         life = maxLife;
         projectileGraphic = new EntityGraphic(entityGraphic.gp);
         projectile = new PROJ_ROCK(projectileGraphic);

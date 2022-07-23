@@ -138,8 +138,9 @@ public class Player extends Entity {// Người chơi kế thừa nhân vật
         /*
          * Update with key handler
          */
-        // resume();
+        // Check if event is ocurring
         entityGraphic.gp.eHandler.checkEvent();
+        // resume();
         if (attacking == true) {
             attacking();
         } else if (entityGraphic.keyH.upPressed == true || entityGraphic.keyH.downPressed == true
@@ -167,8 +168,6 @@ public class Player extends Entity {// Người chơi kế thừa nhân vật
             // Check monster collision
             int monsterIndex = entityGraphic.gp.cChecker.checkEntity(this, entityGraphic.gp.monster);
             contactMonster(monsterIndex);
-            // Check if event is ocurring
-
             // If Collision is false then player can move
             if (entityGraphic.collisionOn == false) {
                 switch (direction) {

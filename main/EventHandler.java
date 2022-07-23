@@ -8,7 +8,8 @@ public class EventHandler {
 
 	int previousEventX, previousEventY;
 	boolean canTouchEvent = true;
-	int eventCounter;
+	int eventCounter = 0;
+
 	public EventHandler(GamePanel gp) {
 		this.gp = gp;
 
@@ -36,79 +37,82 @@ public class EventHandler {
 
 		// check if the player character is more than 1 tile away from the last event
 
+		// int xDistance = Math.abs(gp.player.x - previousEventX);
+		// int yDistance = Math.abs(gp.player.y - previousEventY);
+		// int distance = Math.max(xDistance, yDistance);
+		// if (distance > gp.tileSize) {
+		// canTouchEvent = true;
+		// }
 
 		if (canTouchEvent == true) {
 			if (gp.mapLevel == 0) {
 
 				if (gp.drawPitCounter > 100 && gp.drawPitCounter < 150) {
 					if (hit(6, 10) == true) {
-						canTouchEvent=false;
+						canTouchEvent = false;
 						damagePit(6, 10);
-						}
-
 					}
 					if (hit(10, 5) == true) {
-						canTouchEvent=false;
+						canTouchEvent = false;
 						damagePit(10, 5);
 					}
 				}
-			
+			}
 			if (gp.mapLevel == 2) {
 				if (gp.drawPitCounter > 100 && gp.drawPitCounter < 150) {
 					if (hit(3, 2) == true) {
-						canTouchEvent=false;
+						canTouchEvent = false;
 						damagePit(3, 2);
 					}
 					if (hit(4, 2) == true) {
-						canTouchEvent=false;
+						canTouchEvent = false;
 						damagePit(4, 2);
 					}
 					if (hit(5, 2) == true) {
-						canTouchEvent=false;
+						canTouchEvent = false;
 						damagePit(5, 2);
 					}
 					if (hit(4, 3) == true) {
-						canTouchEvent=false;
+						canTouchEvent = false;
 						damagePit(4, 3);
 					}
 					if (hit(4, 4) == true) {
-						canTouchEvent=false;
+						canTouchEvent = false;
 						damagePit(4, 4);
 					}
 					if (hit(4, 5) == true) {
-						canTouchEvent=false;
+						canTouchEvent = false;
 						damagePit(4, 5);
 					}
 					if (hit(4, 6) == true) {
-						canTouchEvent=false;
+						canTouchEvent = false;
 						damagePit(4, 6);
 					}
 					if (hit(9, 2) == true) {
-						canTouchEvent=false;
+						canTouchEvent = false;
 						damagePit(9, 2);
 					}
 					if (hit(10, 2) == true) {
-						canTouchEvent=false;
+						canTouchEvent = false;
 						damagePit(10, 2);
 					}
 					if (hit(11, 3) == true) {
-						canTouchEvent=false;
+						canTouchEvent = false;
 						damagePit(11, 3);
 					}
 				}
 			}
-		}
-		else if (canTouchEvent==false){
-			eventCounter ++;
-			if (eventCounter > 60){
-				canTouchEvent=true;
-				eventCounter=0;}
+		} else {
+			eventCounter++;
+			if (eventCounter > 60) {
+				canTouchEvent = true;
+				eventCounter = 0;
 			}
+		}
 
 		if (hit(9, 11) == true) {
 			teleport();
 		}
-	
 	}
 
 	public boolean hit(int col, int row) {
@@ -142,7 +146,10 @@ public class EventHandler {
 		gp.ui.showMessage("You fall into a pit");
 		gp.player.life--;
 		// eventRect[col][row].eventDone = true;
-		canTouchEvent = false;
+		// canTouchEvent = false;
+		if (gp.player.life < 0) {
+			gp.gameState = "die";
+		}
 	}
 
 	/*

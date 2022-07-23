@@ -1,0 +1,8 @@
+eclipse.preferences.version=1
+encoding//entity/Entity.java=UTF-8
+encoding//entity/Player.java=UTF-8
+encoding//main/EventHandler.java=UTF-8
+encoding//main/GamePanel.java=UTF-8
+org.eclipse.jdt.core.compiler.release=enabled
+org.eclipse.jdt.core.compiler.source=16
+org.eclipse.jdt.core.compiler.problem.enablePreviewFeatures=enabled
